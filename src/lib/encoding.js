@@ -15,6 +15,14 @@ export function encodeToInvisible(inputString) {
     return invisibleString;
 }
 
+export function binaryToInvisible(binaryString) {
+    let invisibleString = '';
+    for (const bit of binaryString) {
+        invisibleString += (bit === '1') ? '\u200B' : '\u200C'; // Zero-width space for '1', zero-width non-joiner for '0'
+    }
+    return invisibleString;
+}
+
 /**
  * Decodes invisible characters binary representation back to string.
  * @param {string} invisibleString 
