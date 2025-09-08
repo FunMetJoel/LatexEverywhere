@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "LatexEverywhere",
+  "version": "0.0.0",
+  "description": "A chrome extension to write latex on sites that don't support it.",
+  "action": {
+    "default_popup": "src/popup/popup.html"
+  },
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "permissions": ["storage", "activeTab", "scripting"],
+  "options_page": "src/options/options.html"
+}
