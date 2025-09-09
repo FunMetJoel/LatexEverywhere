@@ -66,7 +66,6 @@ export function detectLatexEverywhereBlock() {
             if (invisiblePart) {
                 const invisibleSpan = document.createElement("span");
                 invisibleSpan.className = "invisible-part";
-                invisibleSpan.style.display = "none";
                 invisibleSpan.textContent = decodeFromInvisible(invisiblePart);
                 span.appendChild(invisibleSpan);
             }
