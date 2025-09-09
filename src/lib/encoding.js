@@ -23,6 +23,9 @@ export function binaryToInvisible(binaryString) {
     return invisibleString;
 }
 
+export const startingIndicator = binaryToInvisible('00000001'); // SOH
+export const endingIndicator = binaryToInvisible('00000011'); // ETX
+
 /**
  * Decodes invisible characters binary representation back to string.
  * @param {string} invisibleString 

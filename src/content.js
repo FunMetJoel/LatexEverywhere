@@ -1,3 +1,5 @@
+import { startingIndicator, endingIndicator } from './lib/encoding.js';
+
 function detectLatexEverywhereBlock() {
     const startIndicator = 'START'; // Example start indicator
 
@@ -38,10 +40,76 @@ function detectLatexEverywhereBlock() {
         }
     }
 }
+
+function wrapText(targetText, className = "highlight") {
+  if (!targetText) return;
+
+  const walker = document.createTreeWalker(
+    document.body,
+    NodeFilter.SHOW_TEXT,
+    {
+      acceptNode(node) {
+        // Skip if inside input, textarea, or contenteditable element
+        if (
+          node.parentElement &&
+          (
+            node.parentElement.closest("input, textarea") ||
+            node.parentElement.closest("[contenteditable='true']")
+          )
+        ) {
+          return NodeFilter.FILTER_REJECT;
+        }
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    }
+  );
+
+  const regex = new RegExp(targetText, "gi");
+  const nodesToReplace = [];
+
+  // Collect nodes first (avoids messing with walker while iterating)
+  while (walker.nextNode()) {
+    if (regex.test(walker.currentNode.nodeValue)) {
+      nodesToReplace.push(walker.currentNode);
+    }
+  }
+
+  nodesToReplace.forEach(node => {
+    const frag = document.createDocumentFragment();
+    let lastIndex = 0;
+    node.nodeValue.replace(regex, (match, index) => {
+      // Text before match
+      if (index > lastIndex) {
+        frag.appendChild(document.createTextNode(node.nodeValue.slice(lastIndex, index)));
+      }
+
+      // The wrapped match
+      const span = document.createElement("span");
+      span.className = className;
+      span.textContent = match;
+      frag.appendChild(span);
+
+      lastIndex = index + match.length;
+    });
+
+    // Remaining text
+    if (lastIndex < node.nodeValue.length) {
+      frag.appendChild(document.createTextNode(node.nodeValue.slice(lastIndex)));
+    }
+
+    node.parentNode.replaceChild(frag, node);
+  });
+}
+
 // Runs inside every webpage
 console.log("Loaded LatexEverywhere content script");
+
+const style = document.createElement("style");
+style.textContent = ".highlight { background: yellow; font-weight: bold; }";
+document.head.appendChild(style);
 
 // repeatedly check for LatexEverywhere blocks every 5 seconds
 setInterval(() => {
     detectLatexEverywhereBlock();
+    wrapText("example");
 }, 5000);

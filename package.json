@@ -1,0 +1,27 @@
+{
+  "name": "latexeverywhere",
+  "version": "0.0.0",
+  "description": "A chrome extension to write latex on sites that don't support it",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "build": "vite build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FunMetJoel/LatexEverywhere.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FunMetJoel/LatexEverywhere/issues"
+  },
+  "homepage": "https://github.com/FunMetJoel/LatexEverywhere#readme",
+  "devDependencies": {
+    "vite": "^7.1.5",
+    "vite-plugin-static-copy": "^3.1.2"
+  }
+}

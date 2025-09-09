@@ -4,17 +4,18 @@
   "version": "0.0.0",
   "description": "A chrome extension to write latex on sites that don't support it.",
   "action": {
-    "default_popup": "src/popup/popup.html"
+    "default_popup": "popup/popup.html"
   },
   "background": {
-    "service_worker": "src/background.js"
+    "service_worker": "background.js"
   },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["src/content.js"]
+      "js": ["content.js"],
+      "type": "module"
     }
   ],
   "permissions": ["storage", "activeTab", "scripting", "tabs"],
-  "options_page": "src/options/options.html"
+  "options_page": "options/options.html"
 }
