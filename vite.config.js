@@ -26,6 +26,7 @@ export default defineConfig({
         { src: "src/options/*.html", dest: "options" },
         { src: "src/options/*.css", dest: "options" },
         { src: "src/options/*.js", dest: "options" },
+        { src: "src/lib/*.js", dest: "lib" },
       ],
     }),
   ],
