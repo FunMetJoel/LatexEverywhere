@@ -54,7 +54,6 @@ export function detectLatexEverywhereBlock() {
             //   <span class="invisible-part" style="display:none;">invisiblePart</span>
             // </span>
 
-
             const span = document.createElement("span");
             span.className = "LatexEverywhere-block highlight";
             if (visiblePart) {
@@ -66,7 +65,12 @@ export function detectLatexEverywhereBlock() {
             if (invisiblePart) {
                 const invisibleSpan = document.createElement("span");
                 invisibleSpan.className = "invisible-part";
-                invisibleSpan.textContent = decodeFromInvisible(invisiblePart);
+                const decoded = decodeFromInvisible(invisiblePart);
+                try {
+                    katex.render(decoded, invisibleSpan, { throwOnError: false });
+                } catch (e) {
+                    invisibleSpan.textContent = decoded; // Fallback to plain text if rendering fails
+                }
                 span.appendChild(invisibleSpan);
             }
 

@@ -12,6 +12,8 @@ export default defineConfig({
       output: {
         entryFileNames: `[name].js`, // keeps folder structure
         format: "iife",
+        inlineDynamicImports: true,
+        chunkFileNames: undefined
       },
     },
   },
@@ -27,6 +29,8 @@ export default defineConfig({
         { src: "src/options/*.css", dest: "options" },
         { src: "src/options/*.js", dest: "options" },
         { src: "src/lib/*.js", dest: "lib" },
+        { src: "node_modules/katex/dist/katex.min.css", dest: "." },
+        { src: "node_modules/katex/dist/katex.min.js", dest: "lib" }
       ],
     }),
   ],
