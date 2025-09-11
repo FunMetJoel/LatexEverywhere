@@ -33,6 +33,8 @@ export function unicodify(latex) {
     result = replaceRoots(result);
     result = replaceSuperscripts(result);
     result = replaceSubscripts(result);
+    result = overline(result);
+    result = underline(result);
 
     return result;
 }
@@ -438,3 +440,16 @@ export function replaceSubscripts(latex) {
     });
 }
 
+export function overline(latex) {
+    // When \overline{...} is found, replace it with the content followed by a combining overline
+    return latex.replace(/\\overline\{([^}]+)\}/g, (match, p1) => {
+        return p1.split('').map(char => char + '\u0305').join('');
+    });
+}
+
+export function underline(latex) {
+    // When \underline{...} is found, replace it with the content followed by a combining underline
+    return latex.replace(/\\underline\{([^}]+)\}/g, (match, p1) => {
+        return p1.split('').map(char => char + '\u0332').join('');
+    });
+}
