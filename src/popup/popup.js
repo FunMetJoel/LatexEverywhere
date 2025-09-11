@@ -1,7 +1,11 @@
 import { startIndicator, endIndicator, middleIndicator } from '../lib/encoding.js';
 import { encodeToInvisible } from '../lib/encoding.js';
+import { unicodify } from '../lib/unicodify.js';
+import '../lib/katex.min.js';
+
 export function copyExample() {
-    const example = `${startIndicator}y=ax+b${middleIndicator}${encodeToInvisible("HALLO?")}${endIndicator}`;
+    const latex = document.getElementById('latexInput').value || 'y=ax+b';
+    const example = `${startIndicator}${unicodify(latex)}${middleIndicator}${encodeToInvisible(latex)}${endIndicator}`;
     navigator.clipboard.writeText(example).then(() => {
         console.log('Example copied to clipboard');
     }).catch(err => {
@@ -19,4 +23,25 @@ document.getElementById('highlightToggle').addEventListener('change', function()
             console.log(response.status);
         });
     });
+});
+
+document.getElementById('latexInput').addEventListener('input', function() {
+    const latex = this.value;
+    const outputDiv = document.getElementById('renderedOutput');
+    if (latex.trim() === '') {
+        outputDiv.innerHTML = '';
+        return;
+    }
+
+    try {
+        const unicode = unicodify(latex);
+        outputDiv.innerHTML = unicode;
+
+        outputDiv.innerHTML += ' | '; // Clear previous content
+
+        const html = katex.renderToString(latex, { throwOnError: false });
+        outputDiv.innerHTML += html;
+    } catch (err) {
+        outputDiv.innerHTML = '<span style="color: red;">Invalid LaTeX</span>';
+    }
 });
