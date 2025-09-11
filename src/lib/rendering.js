@@ -49,13 +49,13 @@ export function detectLatexEverywhereBlock() {
             const invisiblePart = parts[1] || '';
 
             // The wrapped match, without indicators
-            // <span class="LatexEverywhere-block highlight">
+            // <span class="LatexEverywhere-block">
             //   <span class="visible-part">visiblePart</span>
             //   <span class="invisible-part" style="display:none;">invisiblePart</span>
             // </span>
 
             const span = document.createElement("span");
-            span.className = "LatexEverywhere-block highlight";
+            span.className = "LatexEverywhere-block";
             if (visiblePart) {
                 const visibleSpan = document.createElement("span");
                 visibleSpan.className = "visible-part";

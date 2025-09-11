@@ -7,10 +7,10 @@ import { detectLatexEverywhereBlock } from './lib/rendering.js';
 console.log("Loaded LatexEverywhere content script");
 
 const style = document.createElement("style");
-style.textContent = ".highlight { background-color: red; font-weight: bold; }";
-style.textContent += "body[latex-everywhere-mode='unicode'] .invisible-part { display: none; }";
+style.textContent = "body[latex-everywhere-mode='unicode'] .invisible-part { display: none; }";
 style.textContent += "body[latex-everywhere-mode='latex'] .visible-part { display: none; }";
 document.head.appendChild(style);
+document.body.setAttribute('latex-everywhere-mode', 'latex'); // default mode
 
 // repeatedly check for LatexEverywhere blocks every second
 setInterval(() => {
