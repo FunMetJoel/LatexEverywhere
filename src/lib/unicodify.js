@@ -1,4 +1,28 @@
 
+const superscriptMap = {
+    '0': '⁰',
+    '1': '¹',
+    '2': '²',
+    '3': '³',
+    '4': '⁴',
+    '5': '⁵',
+    '6': '⁶',
+    '7': '⁷',
+    '8': '⁸',
+    '9': '⁹'
+};
+const subscriptMap = {
+    '0': '₀',
+    '1': '₁',
+    '2': '₂',
+    '3': '₃',
+    '4': '₄',
+    '5': '₅',
+    '6': '₆',
+    '7': '₇',
+    '8': '₈',
+    '9': '₉'
+};
 
 export function unicodify(latex) {
     let result = latex;
@@ -6,6 +30,7 @@ export function unicodify(latex) {
     // First replace known LaTeX commands with their Unicode equivalents
     result = replaceCaractersWithUnicode(result);
     result = replaceFractions(result);
+    result = replaceRoots(result);
 
     return result;
 }
@@ -310,30 +335,7 @@ export function replaceFractions(latex) {
         '\\frac{1}{10}': '⅒'
     };
 
-    const superscriptMap = {
-        '0': '⁰',
-        '1': '¹',
-        '2': '²',
-        '3': '³',
-        '4': '⁴',
-        '5': '⁵',
-        '6': '⁶',
-        '7': '⁷',
-        '8': '⁸',
-        '9': '⁹'
-    };
-    const subscriptMap = {
-        '0': '₀',
-        '1': '₁',
-        '2': '₂',
-        '3': '₃',
-        '4': '₄',
-        '5': '₅',
-        '6': '₆',
-        '7': '₇',
-        '8': '₈',
-        '9': '₉'
-    };
+    
 
     // Replace simple Unicode fractions first
     result = result.replace(/\\frac\{(\d+)\}\{(\d+)\}/g, (match, p1, p2) => {
@@ -354,5 +356,21 @@ export function replaceFractions(latex) {
         return `(${p1})/(${p2})`;
     });
 
+    return result;
+}
+
+export function replaceRoots(latex) {
+    let result = latex;
+
+    // find instances of \sqrt[n]{expression} or \sqrt{expression}
+    result = result.replace(/\\sqrt(?:\[(\d+)\])?\{([^{}]+)\}/g, (match, index, expr) => {
+        if (index) {
+            // nth root
+            return `ⁿ√(${expr})`.replace('ⁿ', index.split('').map(char => superscriptMap[char] || char).join(''));
+        } else {
+            // square root
+            return `√(${expr})`;
+        }
+    });
     return result;
 }

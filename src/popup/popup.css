@@ -1,0 +1,12 @@
+#renderedOutput {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    overflow-y: auto;
+    white-space: pre-wrap; /* Preserve whitespace and wrap as needed */
+    word-wrap: break-word; /* Break long words to fit the container */
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+}
