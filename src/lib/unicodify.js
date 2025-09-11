@@ -35,11 +35,13 @@ export function unicodify(latex) {
     result = replaceSubscripts(result);
     result = overline(result);
     result = underline(result);
+    result = simpleFunctions(result);
+    result = mathFont(result);
 
     return result;
 }
 
-export function replaceCaractersWithUnicode(latex) {
+function replaceCaractersWithUnicode(latex) {
     const greekLetters = {
         // Lowercase Greek
         '\\alpha': 'α',
@@ -338,7 +340,7 @@ export function replaceCaractersWithUnicode(latex) {
     return latex.replace(/\\[a-zA-Z]+/g, match => replacements[match] || match);
 }
 
-export function replaceFractions(latex) {
+function replaceFractions(latex) {
     let result = latex;
 
     const unicodeFractions = {
@@ -386,7 +388,7 @@ export function replaceFractions(latex) {
     return result;
 }
 
-export function replaceRoots(latex) {
+function replaceRoots(latex) {
     let result = latex;
 
     // find instances of \sqrt[n]{expression} or \sqrt{expression}
@@ -402,7 +404,7 @@ export function replaceRoots(latex) {
     return result;
 }
 
-export function replaceSuperscripts(latex) {
+function replaceSuperscripts(latex) {
     // Replace ^{...} with corresponding Unicode superscripts if possible, otherwise replace { } with ^( )
     return latex.replace(/\^(\{([^}]+)\}|([^\s^_{}]))/g, (match, p1, p2, p3) => {
         const content = p2 || p3;
@@ -421,7 +423,7 @@ export function replaceSuperscripts(latex) {
     });
 }
 
-export function replaceSubscripts(latex) {
+function replaceSubscripts(latex) {
     // Replace _{...} with corresponding Unicode subscripts if possible, otherwise replace { } with _( )
     return latex.replace(/_(\{([^}]+)\}|([^\s^_{}]))/g, (match, p1, p2, p3) => {
         const content = p2 || p3;
@@ -440,16 +442,71 @@ export function replaceSubscripts(latex) {
     });
 }
 
-export function overline(latex) {
+function overline(latex) {
     // When \overline{...} is found, replace it with the content followed by a combining overline
     return latex.replace(/\\overline\{([^}]+)\}/g, (match, p1) => {
         return p1.split('').map(char => char + '\u0305').join('');
     });
 }
 
-export function underline(latex) {
+function underline(latex) {
     // When \underline{...} is found, replace it with the content followed by a combining underline
     return latex.replace(/\\underline\{([^}]+)\}/g, (match, p1) => {
         return p1.split('').map(char => char + '\u0332').join('');
+    });
+}
+
+function simpleFunctions(latex) {
+    // A simple function is a function in format
+    // [Function name][optional space][single character or {...}]
+    const replacements = {
+        '\\sin': 'sin',
+        '\\cos': 'cos',
+        '\\tan': 'tan',
+        '\\csc': 'csc',
+        '\\sec': 'sec',
+        '\\cot': 'cot',
+        '\\log': 'log',
+        '\\ln': 'ln',
+        '\\exp': 'exp',
+        '\\max': 'max',
+        '\\min': 'min',
+        '\\arg': 'arg',
+        '\\gcd': 'gcd',
+        '\\deg': 'deg',
+        '\\dim': 'dim',
+        '\\hom': 'hom',
+        '\\ker': 'ker',
+        '\\Pr': 'Pr',
+        '\\det': 'det',
+        '\\mod': 'mod',
+    };
+    return latex.replace(/\\[a-zA-Z]+\s*(\{[^}]+\}|[^\s^_{}])/g, (match) => {
+        const funcName = match.match(/\\[a-zA-Z]+/)[0];
+        const rest = match.slice(funcName.length).trim();
+        return (replacements[funcName] || funcName) + rest;
+    });
+}
+
+function mathFont(latex) {
+    const fontMap = {
+        '\\mathbb': { 'A': '𝔸', 'B': '𝔹', 'C': 'ℂ', 'D': '𝔻', 'E': '𝔼', 'F': '𝔽', 'G': '𝔾', 'H': 'ℍ', 'I': '𝕀', 'J': '𝕁',
+            'K': '𝕂', 'L': '𝕃', 'M': '𝕄', 'N': 'ℕ', 'O': '𝕆', 'P': 'ℙ', 'Q': 'ℚ', 'R': 'ℝ', 'S': '𝕊', 'T': '𝕋',
+            'U': '𝕌', 'V': '𝕍', 'W': '𝕎', 'X': '𝕏', 'Y': '𝕐', 'Z': 'ℤ'},
+        '\\mathbf': { 'A': '𝐀', 'B': '𝐁', 'C': '𝐂', 'D': '𝐃', 'E': '𝐄', 'F': '𝐅', 'G': '𝐆', 'H': '𝐇', 'I': '𝐈', 'J': '𝐉',
+            'K': '𝐊', 'L': '𝐋', 'M': '𝐌', 'N': '𝐍', 'O': '𝐎', 'P': '𝐏', 'Q': '𝐐', 'R': '𝐑', 'S': '𝐒', 'T': '𝐓',
+            'U': '𝐔', 'V': '𝐕', 'W': '𝐖', 'X': '𝐗', 'Y': '𝐘', 'Z': '𝐙'},
+        '\\mathcal': { 'A': '𝒜', 'B': 'ℬ', 'C': '𝒞', 'D': '𝒟', 'E': 'ℰ', 'F': 'ℱ', 'G': '𝒢', 'H': 'ℋ', 'I': 'ℐ', 'J':'𝒥',
+            'K': '𝒦', 'L': 'ℒ', 'M': 'ℳ', 'N': '𝒩', 'O': '𝒪', 'P': '𝒫', 'Q': '𝒬', 'R': 'ℛ', 'S': '𝒮', 'T': '𝒯',
+            'U': '𝒰', 'V': '𝒱', 'W': '𝒲', 'X': '𝒳', 'Y': '𝒴', 'Z': '𝒵' },
+        '\\mathfrak': { 'A': '𝔄', 'B': '𝔅', 'C': 'ℭ', 'D': '𝔇', 'E': '𝔈', 'F': '𝔉', 'G': '𝔊', 'H': 'ℌ', 'I': 'ℑ', 'J':'𝔍',
+            'K': '𝔎', 'L': '𝔏', 'M': '𝔐', 'N': '𝔑', 'O': '𝔒', 'P': '𝔓', 'Q': '𝔔', 'R': 'ℜ', 'S': '𝔖', 'T': '𝔗',
+            'U': '𝔘', 'V': '𝔙', 'W': '𝔚', 'X': '𝔛', 'Y': '𝔜', 'Z': 'ℨ' },
+    };
+    return latex.replace(/\\(mathbb|mathbf|mathcal|mathfrak)\s*(\{([^}]+)\}|([^\s^_{}]))/g, (match, p1, p2, p3, p4) => {
+        const content = p3 || p4;
+        const map = fontMap[`\\${p1}`];
+        if (!map) return match;
+        return content.split('').map(char => map[char] || char).join('');
     });
 }
