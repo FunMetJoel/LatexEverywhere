@@ -31,6 +31,8 @@ export function unicodify(latex) {
     result = replaceCaractersWithUnicode(result);
     result = replaceFractions(result);
     result = replaceRoots(result);
+    result = replaceSuperscripts(result);
+    result = replaceSubscripts(result);
 
     return result;
 }
@@ -303,9 +305,32 @@ export function replaceCaractersWithUnicode(latex) {
         '\\gvertneqq': '≩',
     };
 
+    const setCharacters = {
+        '\\emptyset': '∅',
+        '\\varnothing': '∅',
+        '\\infty': '∞',
+        '\\aleph': 'ℵ',
+        '\\hbar': 'ℏ',
+        '\\nabla': '∇',
+        '\\partial': '∂',
+        '\\imath': 'ı',
+        '\\jmath': 'ȷ',
+        '\\ell': 'ℓ',
+        '\\Re': 'ℜ',
+        '\\Im': 'ℑ',
+        '\\wp': '℘',
+        '\\mho': '℧',
+        '\\bot': '⊥',
+        '\\top': '⊤',
+        '\\forall': '∀',
+        '\\exists': '∃',
+        '\\neg': '¬',
+    };
+
     const replacements = {
         ...greekLetters,
         ...binaryCaracters,
+        ...setCharacters
     };
 
     return latex.replace(/\\[a-zA-Z]+/g, match => replacements[match] || match);
@@ -338,13 +363,13 @@ export function replaceFractions(latex) {
     
 
     // Replace simple Unicode fractions first
-    result = result.replace(/\\frac\{(\d+)\}\{(\d+)\}/g, (match, p1, p2) => {
+    result = result.replace(/\\(?:tfrac|dfrac|frac)\{(\d+)\}\{(\d+)\}/g, (match, p1, p2) => {
         const key = `\\frac{${p1}}{${p2}}`;
         return unicodeFractions[key] || match;
     });
 
     // Replace other simple fractions with superscript / subscript
-    result = result.replace(/\\frac\{(\d+)\}\{(\d+)\}/g, (match, p1, p2) => {
+    result = result.replace(/\\(?:tfrac|dfrac|frac)\{(\d+)\}\{(\d+)\}/g, (match, p1, p2) => {
         const superscript = p1.split('').map(char => superscriptMap[char] || char).join('');
         const subscript = p2.split('').map(char => subscriptMap[char] || char).join('');
         return superscript + '⁄' + subscript;
@@ -352,7 +377,7 @@ export function replaceFractions(latex) {
 
     // Handle complex fractions
     // \frac{a+b}{c+d} -> (a+b)/(c+d)
-    result = result.replace(/\\frac\{([^{}]+)\}\{([^{}]+)\}/g, (match, p1, p2) => {
+    result = result.replace(/\\(?:tfrac|dfrac|frac)\{([^{}]+)\}\{([^{}]+)\}/g, (match, p1, p2) => {
         return `(${p1})/(${p2})`;
     });
 
@@ -374,3 +399,42 @@ export function replaceRoots(latex) {
     });
     return result;
 }
+
+export function replaceSuperscripts(latex) {
+    // Replace ^{...} with corresponding Unicode superscripts if possible, otherwise replace { } with ^( )
+    return latex.replace(/\^(\{([^}]+)\}|([^\s^_{}]))/g, (match, p1, p2, p3) => {
+        const content = p2 || p3;
+        if (p2) {
+            // content is within { }
+            const onlyNumbers = /^[0-9]+$/.test(content);
+            if (!onlyNumbers) {
+                return `^(${content})`;
+            }
+            const unicodeSup = content.split('').map(char => superscriptMap[char] || char).join('');
+            return unicodeSup !== content ? unicodeSup : `^(${content})`;
+        } else {
+            // single character
+            return superscriptMap[content] || content;
+        }
+    });
+}
+
+export function replaceSubscripts(latex) {
+    // Replace _{...} with corresponding Unicode subscripts if possible, otherwise replace { } with _( )
+    return latex.replace(/_(\{([^}]+)\}|([^\s^_{}]))/g, (match, p1, p2, p3) => {
+        const content = p2 || p3;
+        if (p2) {
+            // content is within { }
+            const onlyNumbers = /^[0-9]+$/.test(content);
+            if (!onlyNumbers) {
+                return `_${content}`;
+            }
+            const unicodeSub = content.split('').map(char => subscriptMap[char] || char).join('');
+            return unicodeSub !== content ? unicodeSub : `_(${content})`;
+        } else {
+            // single character
+            return subscriptMap[content] || content;
+        }
+    });
+}
+
