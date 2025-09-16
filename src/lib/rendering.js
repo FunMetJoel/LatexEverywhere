@@ -25,28 +25,24 @@ export function detectLatexEverywhereBlock() {
         }
     );
     // Starting with the start indicator and ending with the end indicator
-    const regex = new RegExp(`${startIndicator}(.*?)${endIndicator}`, "gs");
+    const regex = new RegExp(`${startIndicator}(.*?)${middleIndicator}((?:.{8})*?)${endIndicator}`, "gs");
     const nodesToReplace = [];
 
     while (walker.nextNode()) {
         if (regex.test(walker.currentNode.nodeValue)) {
-        nodesToReplace.push(walker.currentNode);
+            nodesToReplace.push(walker.currentNode);
         }
     }
 
     nodesToReplace.forEach(node => {
         const frag = document.createDocumentFragment();
         let lastIndex = 0;
-        node.nodeValue.replace(regex, (match, inner, index) => {
+        node.nodeValue.replace(regex, (match, visiblePart, invisiblePart, index) => {
+
             // Text before match
             if (index > lastIndex) {
                 frag.appendChild(document.createTextNode(node.nodeValue.slice(lastIndex, index)));
             }
-
-            // split in visible and invisible parts at middleIndicator
-            const parts = inner.split(middleIndicator);
-            const visiblePart = parts[0];
-            const invisiblePart = parts[1] || '';
 
             // The wrapped match, without indicators
             // <span class="LatexEverywhere-block">
@@ -56,6 +52,7 @@ export function detectLatexEverywhereBlock() {
 
             const span = document.createElement("span");
             span.className = "LatexEverywhere-block";
+            span.setAttribute('data', match.replace('\u200B', '₁').replace('\u200C', '₀')); // store original data in attribute, replacing invisible chars by ₀ and ₁
             if (visiblePart) {
                 const visibleSpan = document.createElement("span");
                 visibleSpan.className = "visible-part";
@@ -65,6 +62,9 @@ export function detectLatexEverywhereBlock() {
             if (invisiblePart) {
                 const invisibleSpan = document.createElement("span");
                 invisibleSpan.className = "invisible-part";
+                // add latex formula in parameter to invisibleSpan
+                invisibleSpan.setAttribute('data-latex', invisiblePart);
+                invisibleSpan.setAttribute('decoded-data-latex', decodeFromInvisible(invisiblePart));
                 const decoded = decodeFromInvisible(invisiblePart);
                 try {
                     katex.render(decoded, invisibleSpan, { throwOnError: false });
