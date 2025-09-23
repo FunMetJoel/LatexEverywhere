@@ -18,3 +18,7 @@ Thumbs.db
 .idea/
 *.sublime-workspace
 *.sublime-project
+
+# packed
+*.crx
+*.pem
