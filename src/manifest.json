@@ -16,6 +16,14 @@
       "css": ["katex.min.css"]
     }
   ],
-  "permissions": ["storage", "activeTab", "scripting", "tabs"],
-  "options_page": "options/options.html"
+  "permissions": ["contextMenus", "storage", "activeTab", "scripting", "tabs"],
+  "options_page": "options/options.html",
+  "icons": {
+    "16": "assets/logo_icon16.png",
+    "32": "assets/logo_icon32.png",
+    "48": "assets/logo_icon48.png",
+    "128": "assets/logo_icon128.png",
+    "256": "assets/logo_icon256.png",
+    "512": "assets/logo_icon512.png"
+  }
 }
