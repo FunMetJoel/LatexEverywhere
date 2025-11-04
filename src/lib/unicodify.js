@@ -510,3 +510,39 @@ function mathFont(latex) {
         return content.split('').map(char => map[char] || char).join('');
     });
 }
+
+function handleMatrixes(latex) {
+    let maxRows = 1;
+    let builderList = [];
+
+    const matrixRegex = /\\begin\{matrix\}([\s\S]*?)\\end\{matrix\}/g;
+    let lastIndex = 0;
+    let match;
+
+    while ((match = matrixRegex.exec(latex)) !== null) {
+        // Add text before the matrix
+        if (match.index > lastIndex) {
+            builderList.push(latex.slice(lastIndex, match.index));
+        }
+        // Parse matrix content
+        const matrixType = match[1];
+        const matrixContent = match[2].trim();
+        // Split into rows
+        const rows = matrixContent.split(/\\\\/).map(row =>
+            row.trim().split('&').map(cell => cell.trim())
+        );
+        builderList.push({
+            type: matrixType,
+            data: rows
+        });
+        lastIndex = matrixRegex.lastIndex;
+    }
+    // Add remaining text after last matrix
+    if (lastIndex < latex.length) {
+        builderList.push(latex.slice(lastIndex));
+    }
+
+
+    // This function is a placeholder for future matrix handling if needed
+    return builderList;
+}

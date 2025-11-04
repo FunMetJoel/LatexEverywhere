@@ -1,7 +1,8 @@
 import { startIndicator, endIndicator, middleIndicator } from '../lib/encoding.js';
 import { encodeToInvisible } from '../lib/encoding.js';
 import { unicodify } from '../lib/unicodify.js';
-import '../lib/katex.min.js';
+// import '../lib/katex.min.js';
+import katex from 'katex';
 
 export function copyExample() {
     const latex = document.getElementById('latexInput').value || 'y=ax+b';
