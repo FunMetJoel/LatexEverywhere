@@ -188,7 +188,11 @@ export class Root extends Expression {
     }
 
     unicodify(): string {
-        return "√[" + this.degree.unicodify() + "](" + this.radicand.unicodify() + ")";
+        if(this.degree.canSuperScript()) {
+            return this.degree.getSuperscript() + "√(" + this.radicand.unicodify() + ")";
+        } else {
+            return "[" + this.degree.unicodify() + "]√(" + this.radicand.unicodify() + ")";
+        }
     }
 
     canSuperScript(): boolean {

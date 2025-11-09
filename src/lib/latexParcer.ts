@@ -10,7 +10,8 @@ export function parseLatex(input: string): MathExpr.Expression {
 function tokenize(input: string): string[] {
     // Latex tokenizer. A token can be a command (starting with \), a symbol (+, -, /, etc.), or an alphanumeric string.
     const tokens: string[] = [];
-    const regex = /\\[a-zA-Z]+|[+\-*/^_=(){}]|[0-9a-zA-Z]+/g;
+    const regex = /\\[a-zA-Z]+|[+\-*/^_=(){}[\]]|[0-9a-zA-Z]+/g;
+
     let match;
     while ((match = regex.exec(input)) !== null) {
         tokens.push(match[0]);
@@ -112,8 +113,8 @@ function tokenInterpreter(tokens: string[]): MathExpr.Expression {
                 const power = parseFactor(); // parse the optional power
                 const radicand = parseFactor();
                 return new MathExpr.Root(
-                    radicand,
-                    power
+                    power,
+                    radicand
                 )
             } else {
                 const radicand = parseFactor();
