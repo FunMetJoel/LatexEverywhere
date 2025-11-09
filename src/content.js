@@ -1,7 +1,7 @@
 // import "katex/dist/katex.min.css";
 
-import { sackurTetrodeDependencies } from 'mathjs';
 import { detectLatexEverywhereBlock } from './lib/rendering.js';
+import { parseLatex } from './lib/latexParcer.js';
 
 // Runs inside every webpage
 console.log("Loaded LatexEverywhere content script");
@@ -23,3 +23,4 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         sendResponse({status: 'mode set to ' + message.mode});
     }
 });
+

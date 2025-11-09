@@ -13,7 +13,7 @@ export default defineConfig({
         format: 'iife',
         entryFileNames: 'content.js',
       },
-      inlineDynamicImports: false,
+      // inlineDynamicImports: false,
     },
 
     chunkSizeWarningLimit: 1000,
