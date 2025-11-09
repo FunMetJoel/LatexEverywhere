@@ -24,3 +24,32 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     }
 });
 
+let test = parseLatex("mc^{2+2-3^5}");
+test.print();
+console.log(
+    test.unicodify()
+);
+
+let test2 = parseLatex("a^{b+c-d}");
+test2.print();
+console.log(
+    test2.unicodify()
+);
+
+let test3 = parseLatex("x*y-z");
+test3.print();
+console.log(
+    test3.unicodify()
+);
+
+let test4 = parseLatex("(x+y)^{(a-b+c)}");
+test4.print();
+console.log(
+    test4.unicodify()
+);
+
+let test5 = parseLatex("(x+y)^{m*n}");
+test5.print();
+console.log(
+    test5.unicodify()
+);

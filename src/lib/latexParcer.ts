@@ -1,14 +1,6 @@
 import * as MathExpr from './mathExpressions';
 
 export function parseLatex(input: string): MathExpr.Expression {
-    // return new MathExpr.Add(
-    //     new MathExpr.Token("a"),
-    //     new MathExpr.Fraction(
-    //         new MathExpr.Token("b"),
-    //         new MathExpr.Token("c")
-    //     )
-    // );
-
     const tokens = tokenize(input);
     const expression = tokenInterpreter(tokens);
     return expression;
@@ -98,11 +90,16 @@ function tokenInterpreter(tokens: string[]): MathExpr.Expression {
         if (token === '(') {
             const expr = parseExpression();
             consume(); // consume ')'
-            return expr;
+            return new MathExpr.BracketedExpression(expr);
         }
         else if (token === '{') {
             const expr = parseExpression();
             consume(); // consume '}'
+            return expr;
+        }
+        else if (token === '[') {
+            const expr = parseExpression();
+            consume(); // consume ']'
             return expr;
         }
         else if (token === '\\frac') {
@@ -111,8 +108,17 @@ function tokenInterpreter(tokens: string[]): MathExpr.Expression {
             return new MathExpr.Fraction(numerator, denominator);
         }
         else if (token === '\\sqrt') {
-            const radicand = parseFactor();
-            return new MathExpr.Function('sqrt', radicand);
+            if (peek() === '[') {
+                const power = parseFactor(); // parse the optional power
+                const radicand = parseFactor();
+                return new MathExpr.Root(
+                    radicand,
+                    power
+                )
+            } else {
+                const radicand = parseFactor();
+                return new MathExpr.SquareRoot(radicand);
+            }
         }
         else if (token.charAt(0) === '\\') {
             const funcName = token.substring(1);
