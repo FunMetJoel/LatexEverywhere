@@ -145,35 +145,32 @@ export class Fraction extends Expression {
     }
 }
 
-export class Power extends Expression {
-    base: Expression
+export class Superscript extends Expression {
     exponent: Expression;
-    constructor(base: Expression, exponent: Expression) {
+    constructor(exponent: Expression) {
         super();
-        this.base = base;
         this.exponent = exponent;
     }
 
     print(indent: number = 0) {
-        this.base.print(indent + 1);
         console.log("..".repeat(indent) + "^");
         this.exponent.print(indent + 1);
     }
 
     unicodify(): string {
         if (this.exponent.canSuperScript()) {
-            return this.base.unicodify() + this.exponent.getSuperscript();
+            return this.exponent.getSuperscript();
         } else {
-            return this.base.unicodify() + "^(" + this.exponent.unicodify() + ")";
+            return "^(" + this.exponent.unicodify() + ")";
         }
     }
 
     getSuperscript(): string {
-        return this.base.getSuperscript() + "ᣔ⁽" + this.exponent.getSuperscript() + "⁾";
+        return "ᣔ⁽" + this.exponent.getSuperscript() + "⁾";
     }
 
     canSuperScript(): boolean {
-        return this.base.canSuperScript() && this.exponent.canSuperScript();
+        return this.exponent.canSuperScript();
     }
 
     canSubScript(): boolean {
@@ -182,25 +179,22 @@ export class Power extends Expression {
 }
 
 export class Subscript extends Expression {
-    base: Expression
     subscript: Expression
-    constructor(base: Expression, subscript: Expression) {
+    constructor(subscript: Expression) {
         super();
-        this.base = base;
         this.subscript = subscript;
     }
 
     print(indent: number = 0) {
-        this.base.print(indent + 1);
         console.log("..".repeat(indent) + "_");
         this.subscript.print(indent + 1);
     }
 
     unicodify(): string {
         if (this.subscript.canSubScript()) {
-            return this.base.unicodify() + this.subscript.getSubscript();
+            return this.subscript.getSubscript();
         } else {
-            return this.base.unicodify() + "_(" + this.subscript.unicodify() + ")";
+            return "_(" + this.subscript.unicodify() + ")";
         }
     }
 
@@ -262,35 +256,6 @@ export class Root extends Expression {
         } else {
             return "[" + this.degree.unicodify() + "]√(" + this.radicand.unicodify() + ")";
         }
-    }
-
-    canSuperScript(): boolean {
-        return false;
-    }
-
-    canSubScript(): boolean {
-        return false;
-    }
-}
-
-export class Function extends Expression {
-    functionName: string;
-    parameter: Expression;
-
-    constructor(functionName: string, parameter: Expression) {
-        super();
-        this.parameter = parameter;
-        this.functionName = functionName;
-    }
-
-    print(indent: number = 0) {
-        console.log("..".repeat(indent) + this.functionName);
-        this.parameter.print(indent + 1);
-        console.log("..".repeat(indent));
-    }
-
-    unicodify(): string {
-        return this.functionName + this.parameter.unicodify();
     }
 
     canSuperScript(): boolean {

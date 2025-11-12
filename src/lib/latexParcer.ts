@@ -50,7 +50,7 @@ function tokenInterpreter(tokens: string[]): MathExpr.Expression {
     }
 
     function parseTerm(): MathExpr.Expression {
-        let left = parsePower();
+        let left = parseFactor();
         while (true) {
             const token = peek();
             if (token === '*' || token === '/') {
@@ -74,15 +74,6 @@ function tokenInterpreter(tokens: string[]): MathExpr.Expression {
         return left;
     }
 
-    function parsePower(): MathExpr.Expression {
-        let base = parseFactor();
-        while (true) {
-            const token = peek();
-            break;
-        }
-        return base;
-    }
-
     function parseFactor(): MathExpr.Expression {
         const token = consume();
         if (token === '(') {
@@ -102,11 +93,11 @@ function tokenInterpreter(tokens: string[]): MathExpr.Expression {
         }
         else if (token === '^') {
             const exponent = parseFactor();
-            return new MathExpr.Power(new MathExpr.Token(''), exponent);
+            return new MathExpr.Superscript(exponent);
         }
         else if (token === "_") {
             const subscript = parseFactor();
-            return new MathExpr.Subscript(new MathExpr.Token(''), subscript);
+            return new MathExpr.Subscript(subscript);
         }
         else if (token === '\\frac') {
             const numerator = parseFactor();
@@ -126,11 +117,6 @@ function tokenInterpreter(tokens: string[]): MathExpr.Expression {
                 return new MathExpr.SquareRoot(radicand);
             }
         }
-        // else if (token.charAt(0) === '\\') {
-        //     const funcName = token.substring(1);
-        //     const argument = parseFactor();
-        //     return new MathExpr.Function(funcName, argument);
-        // }
         else if (token.charAt(0) === '\\') {
             const tokenName = token.substring(1);
             return new MathExpr.ParcelableToken(tokenName);
