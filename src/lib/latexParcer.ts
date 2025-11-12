@@ -63,6 +63,10 @@ function tokenInterpreter(tokens: string[]): MathExpr.Expression {
                     left = new MathExpr.Fraction(left, right);
                 }
             }
+            else if (token !== null && !['+', '-', '^', ')', '}', ']'].includes(token)) {
+                const right = parseFactor();
+                left = new MathExpr.ConsecutiveExpression(left, right);
+            }
             else {
                 break;
             }
@@ -121,10 +125,14 @@ function tokenInterpreter(tokens: string[]): MathExpr.Expression {
                 return new MathExpr.SquareRoot(radicand);
             }
         }
+        // else if (token.charAt(0) === '\\') {
+        //     const funcName = token.substring(1);
+        //     const argument = parseFactor();
+        //     return new MathExpr.Function(funcName, argument);
+        // }
         else if (token.charAt(0) === '\\') {
-            const funcName = token.substring(1);
-            const argument = parseFactor();
-            return new MathExpr.Function(funcName, argument);
+            const tokenName = token.substring(1);
+            return new MathExpr.ParcelableToken(tokenName);
         }
         else {
             return new MathExpr.Token(token);

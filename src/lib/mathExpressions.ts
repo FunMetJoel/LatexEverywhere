@@ -211,13 +211,13 @@ export class Function extends Expression {
     }
 
     print(indent: number = 0) {
-        console.log("..".repeat(indent) + this.functionName + "(");
+        console.log("..".repeat(indent) + this.functionName);
         this.parameter.print(indent + 1);
-        console.log("..".repeat(indent) + ")");
+        console.log("..".repeat(indent));
     }
 
     unicodify(): string {
-        return this.functionName + "(" + this.parameter.unicodify() + ")";
+        return this.functionName + this.parameter.unicodify();
     }
 
     canSuperScript(): boolean {
@@ -249,6 +249,183 @@ export class BracketedExpression extends Expression {
     canSuperScript(): boolean {
         return this.expression.canSuperScript();
     }
+}
+
+export class ConsecutiveExpression extends Expression {
+    value1: Expression;
+    value2: Expression;
+    constructor(value1: Expression, value2: Expression) {
+        super();
+        this.value1 = value1;
+        this.value2 = value2;
+    }
+    print(indent: number = 0) {
+        this.value1.print(indent + 1);
+        console.log("..".repeat(indent) + "CONSECUTIVE");
+        this.value2.print(indent + 1);
+    }
+
+    unicodify(): string {
+        return this.value1.unicodify() + this.value2.unicodify();
+    }
+
+    canSuperScript(): boolean {
+        return false; // TODO: Make this check first
+    }
+}
+
+export class ParcelableToken extends Expression {
+    value: string;
+    constructor(value: string) {
+        super();
+        this.value = value;
+    }
+
+    print(indent: number = 0) {
+        console.log("..".repeat(indent) + this.value);
+    }
+
+    unicodify(): string {
+        return ParcelableToken.allMappings[this.value] ?? this.value;
+    }
+
+    canSuperScript(): boolean {
+        return false;
+    }
+
+    static greekCharactersNormal = {
+        "alpha": "α",
+        "beta": "β",
+        "gamma": "γ",
+        "delta": "δ",
+        "epsilon": "ε",
+        "zeta": "ζ",
+        "eta": "η",
+        "theta": "θ",
+        "iota": "ι",
+        "kappa": "κ",
+        "lambda": "λ",
+        "mu": "μ",
+        "nu": "ν",
+        "xi": "ξ",
+        "omicron": "ο",
+        "pi": "π",
+        "rho": "ρ",
+        "sigma": "σ",
+        "tau": "τ",
+        "upsilon": "υ",
+        "phi": "φ",
+        "chi": "χ",
+        "psi": "ψ",
+        "omega": "ω"
+    }
+
+    static greekCharactersCapital = {
+        "Alpha": "Α",
+        "Beta": "Β",
+        "Gamma": "Γ",
+        "Delta": "Δ",
+        "Epsilon": "Ε",
+        "Zeta": "Ζ",
+        "Eta": "Η",
+        "Theta": "Θ",
+        "Iota": "Ι",
+        "Kappa": "Κ",
+        "Lambda": "Λ",
+        "Mu": "Μ",
+        "Nu": "Ν",
+        "Xi": "Ξ",
+        "Omicron": "Ο",
+        "Pi": "Π",
+        "Rho": "Ρ",
+        "Sigma": "Σ",
+        "Tau": "Τ",
+        "Upsilon": "Υ",
+        "Phi": "Φ",
+        "Chi": "Χ",
+        "Psi": "Ψ",
+        "Omega": "Ω"
+    }
+
+    static arrows = {
+        "leftarrow": "←",
+        "rightarrow": "→",
+        "leftrightarrow": "↔",
+        "uparrow": "↑",
+        "downarrow": "↓",
+        "Uparrow": "⇑",
+        "Leftrightarrow": "⇔",
+        "mapsto": "↦",
+        "nearrow": "↗",
+        "swarrow": "↙",
+        "leftharpoonup": "↼",
+        "leftharpoondown": "↽",
+        "Leftarrow": "⇐",
+        "Rightarrow": "⇒",
+        "rightleftharpoons": "⇌",
+        "Downarrow": "⇓",
+        "Updownarrow": "⇕",
+        "longmapsto": "⟼",
+        "searrow": "↘",
+        "nwarrow": "↖",
+        "rightharpoonup": "⇀",
+        "rightharpoondown": "⇁"
+    }
+
+    static miscellaneous = {
+        "infty": "∞",
+        "Re": "ℜ",
+        "nabla": "∇",
+        "partial": "∂",
+        "emptyset": "∅",
+        "wp": "℘",
+        "neg": "¬",
+        "square": "□",
+        "blacksquare": "■",
+        "forall": "∀",
+        "Im": "ℑ",
+        "exists": "∃",
+        "nexists": "∄",
+        "varnothing": "∅",
+        "complement": "∁",
+        "cdots": "⋯",
+        "surd": "√",
+        "triangle": "△"
+    }
+
+    static BinaryOperators: { [key: string]: string } = {
+        "times": "×",
+        "cdot": "·",
+        "div": "÷",
+        "cap": "∩",
+        "cup": "∪",
+        "neq": "≠",
+        "leq": "≤",
+        "geq": "≥",
+        "in": "∈",
+        "perpendicular": "⊥",
+        "notin": "∉",
+        "subset": "⊂",
+        "simeq": "≃",
+        "approx": "≈",
+        "wedge": "∧",
+        "vee": "∨",
+        "oplus": "⊕",
+        "otimes": "⊗",
+        "equiv": "≡",
+        "cong": "≅",
+        "Box": "□",
+        "boxtimes": "⊠"
+    };
+
+    static allMappings: { [key: string]: string } = {
+        ...ParcelableToken.greekCharactersNormal,
+        ...ParcelableToken.greekCharactersCapital,
+        ...ParcelableToken.arrows,
+        ...ParcelableToken.miscellaneous,
+        ...ParcelableToken.BinaryOperators
+    };
+
 }
 
 export class Token extends Expression {
