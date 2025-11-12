@@ -2,9 +2,13 @@ export abstract class Expression {
     abstract print(indent: number): void;
     abstract unicodify(): string;
     abstract canSuperScript(): boolean;
+    abstract canSubScript(): boolean;
     getSuperscript(): string {
         throw new Error("getSuperscript not implemented for this expression");
     };
+    getSubscript(): string {
+        throw new Error("getSubscript not implemented for this expression");
+    }
 }
 
 export class Add extends Expression {
@@ -34,6 +38,14 @@ export class Add extends Expression {
     canSuperScript(): boolean {
         return this.first.canSuperScript() && this.second.canSuperScript();
     }
+
+    getSubscript(): string {
+        return this.first.getSubscript() + '₊' + this.second.getSubscript();
+    }
+
+    canSubScript(): boolean {
+        return this.first.canSubScript() && this.second.canSubScript();
+    }
 }
 
 export class Subtract extends Expression {
@@ -61,6 +73,14 @@ export class Subtract extends Expression {
 
     canSuperScript(): boolean {
         return this.first.canSuperScript() && this.second.canSuperScript();
+    }
+
+    getSubscript(): string {
+        return this.first.getSubscript() + '₋' + this.second.getSubscript();
+    }
+
+    canSubScript(): boolean {
+        return this.first.canSubScript() && this.second.canSubScript();
     }
 }
 
@@ -90,6 +110,11 @@ export class Multiply extends Expression {
     canSuperScript(): boolean {
         return this.first.canSuperScript() && this.second.canSuperScript();
     }
+
+    canSubScript(): boolean {
+        return false;
+    }
+
 }
 
 export class Fraction extends Expression {
@@ -112,6 +137,10 @@ export class Fraction extends Expression {
     }
 
     canSuperScript(): boolean {
+        return false;
+    }
+
+    canSubScript(): boolean {
         return false;
     }
 }
@@ -146,6 +175,42 @@ export class Power extends Expression {
     canSuperScript(): boolean {
         return this.base.canSuperScript() && this.exponent.canSuperScript();
     }
+
+    canSubScript(): boolean {
+        return false;
+    }
+}
+
+export class Subscript extends Expression {
+    base: Expression
+    subscript: Expression
+    constructor(base: Expression, subscript: Expression) {
+        super();
+        this.base = base;
+        this.subscript = subscript;
+    }
+
+    print(indent: number = 0) {
+        this.base.print(indent + 1);
+        console.log("..".repeat(indent) + "_");
+        this.subscript.print(indent + 1);
+    }
+
+    unicodify(): string {
+        if (this.subscript.canSubScript()) {
+            return this.base.unicodify() + this.subscript.getSubscript();
+        } else {
+            return this.base.unicodify() + "_(" + this.subscript.unicodify() + ")";
+        }
+    }
+
+    canSuperScript(): boolean {
+        return false;
+    }
+
+    canSubScript(): boolean {
+        return false;
+    }
 }
 
 export class SquareRoot extends Expression {
@@ -166,6 +231,10 @@ export class SquareRoot extends Expression {
     }
 
     canSuperScript(): boolean {
+        return false;
+    }
+
+    canSubScript(): boolean {
         return false;
     }
 }
@@ -198,6 +267,10 @@ export class Root extends Expression {
     canSuperScript(): boolean {
         return false;
     }
+
+    canSubScript(): boolean {
+        return false;
+    }
 }
 
 export class Function extends Expression {
@@ -221,6 +294,10 @@ export class Function extends Expression {
     }
 
     canSuperScript(): boolean {
+        return false;
+    }
+
+    canSubScript(): boolean {
         return false;
     }
 }
@@ -249,6 +326,14 @@ export class BracketedExpression extends Expression {
     canSuperScript(): boolean {
         return this.expression.canSuperScript();
     }
+
+    getSubscript(): string {
+        return "₍" + this.expression.getSubscript() + "₎";
+    }
+
+    canSubScript(): boolean {
+        return this.expression.canSubScript();
+    }
 }
 
 export class ConsecutiveExpression extends Expression {
@@ -272,6 +357,10 @@ export class ConsecutiveExpression extends Expression {
     canSuperScript(): boolean {
         return false; // TODO: Make this check first
     }
+
+    canSubScript(): boolean {
+        return false; // TODO: Make this check first
+    }
 }
 
 export class ParcelableToken extends Expression {
@@ -290,6 +379,10 @@ export class ParcelableToken extends Expression {
     }
 
     canSuperScript(): boolean {
+        return false;
+    }
+
+    canSubScript(): boolean {
         return false;
     }
 
@@ -456,6 +549,11 @@ export class Token extends Expression {
     }
 
     canSuperScript(): boolean {
+        for (const char of this.value) {
+            if (!(char in Token.SuperScriptMap)) {
+                return false;
+            }
+        }
         return true;
     }
 
@@ -521,5 +619,56 @@ export class Token extends Expression {
         'y': 'ʸ',
         'z': 'ᶻ',
 
+    };
+
+    canSubScript(): boolean {
+        for (const char of this.value) {
+            if (!(char in Token.SubScriptMap)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    getSubscript(): string {
+        let result = "";
+        for (const char of this.value) {
+            if (char in Token.SubScriptMap) {
+                result += Token.SubScriptMap[char];
+            } else {
+                result += char; // if no subscript available, keep original
+            }
+        }
+        return result;
+    }
+
+    static SubScriptMap: { [key: string]: string } = {
+        '0': '₀',
+        '1': '₁',
+        '2': '₂',
+        '3': '₃',
+        '4': '₄',
+        '5': '₅',
+        '6': '₆',
+        '7': '₇',
+        '8': '₈',
+        '9': '₉',
+        'a': 'ₐ',
+        'e': 'ₑ',
+        'h': 'ₕ',
+        'i': 'ᵢ',
+        'j': 'ⱼ',
+        'k': 'ₖ',
+        'l': 'ₗ',
+        'm': 'ₘ',
+        'n': 'ₙ',
+        'o': 'ₒ',
+        'p': 'ₚ',
+        'r': 'ᵣ',
+        's': 'ₛ',
+        't': 'ₜ',
+        'u': 'ᵤ',
+        'v': 'ᵥ',
+        'x': 'ₓ',
     };
 }

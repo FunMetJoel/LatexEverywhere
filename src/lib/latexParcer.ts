@@ -26,6 +26,7 @@ function tokenInterpreter(tokens: string[]): MathExpr.Expression {
     }
 
     function consume(): string {
+        console.log('Consuming token:', tokens[0]);
         return tokens.shift()!;
     }
 
@@ -63,7 +64,7 @@ function tokenInterpreter(tokens: string[]): MathExpr.Expression {
                     left = new MathExpr.Fraction(left, right);
                 }
             }
-            else if (token !== null && !['+', '-', '^', ')', '}', ']'].includes(token)) {
+            else if (token !== null && !['+', '-', '^', '_', ')', '}', ']'].includes(token)) {
                 const right = parseFactor();
                 left = new MathExpr.ConsecutiveExpression(left, right);
             }
@@ -81,7 +82,14 @@ function tokenInterpreter(tokens: string[]): MathExpr.Expression {
             if (token === '^') {
                 consume(); // consume '^'
                 const exponent = parseFactor();
+                console.log('Exponent:', exponent);
                 base = new MathExpr.Power(base, exponent);
+            }
+            else if (token === '_') {
+                consume(); // consume '_'
+                const subscript = parseFactor();
+                console.log('Subscript:', subscript);
+                base = new MathExpr.Subscript(base, subscript);
             }
             else {
                 break;
