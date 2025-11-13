@@ -31,6 +31,8 @@ export default defineConfig({
         { src: "src/manifest.json", dest: "." },
         { src: "src/popup/*.html", dest: "popup" },
         { src: "src/popup/*.css", dest: "popup" },
+        { src: "src/insertPopup/popup.html", dest: "insertPopup" },
+        { src: "src/insertPopup/popup.css", dest: "insertPopup" },
         { src: "src/options/*.html", dest: "options" },
         { src: "src/options/*.css", dest: "options" },
         { src: "assets/*", dest: "assets" },

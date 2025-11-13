@@ -1,0 +1,44 @@
+:root {
+    --LatexEverywherePopup-background-color: #ffffff;
+    --LatexEverywherePopup-text-color: #222222;
+    --LatexEverywherePopup-accent-color: #e0e0e0;
+    --LatexEverywherePopup-selected-accent-color: #c0c0c0;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --LatexEverywherePopup-background-color: #181a1b;
+        --LatexEverywherePopup-text-color: #f1f1f1;
+        --LatexEverywherePopup-accent-color: #33373a;
+        --LatexEverywherePopup-selected-accent-color: #4b4f52;
+    }
+}
+
+#LatexEverywherePopup-Background {
+    background-color: #0000005a; 
+    width: 100%; 
+    height: 100%; 
+    display: flex; 
+    flex-direction: column;
+}
+
+#LatexEverywherePopup-Main {
+    background-color: var(--LatexEverywherePopup-background-color);
+    color: var(--LatexEverywherePopup-text-color);
+    border-radius: 10px;
+    padding: 10px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 220px;
+    border: 2px solid var(--LatexEverywherePopup-accent-color);
+}
+
+h1 {
+    font-size: 18px;
+    margin: 0;
+    text-align: center;
+    width: 100%;
+    min-width: 200px;
+}
