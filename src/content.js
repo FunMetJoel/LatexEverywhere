@@ -23,3 +23,4 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         sendResponse({status: 'mode set to ' + message.mode});
     }
 });
+

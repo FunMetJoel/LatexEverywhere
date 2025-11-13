@@ -1,3 +1,19 @@
+:root {
+    --background-color: #ffffff;
+    --text-color: #222222;
+    --accent-color: #e0e0e0;
+    --selected-accent-color: #c0c0c0;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background-color: #181a1b;
+        --text-color: #f1f1f1;
+        --accent-color: #33373a;
+        --selected-accent-color: #4b4f52;
+    }
+}
+
 #renderedOutput {
     width: 100%;
     height: 100%;
@@ -13,4 +29,64 @@
 
 body {
     margin: 10px;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 220px;
 }
+
+h1 {
+    font-size: 18px;
+    margin: 0;
+    text-align: center;
+    width: 100%;
+    min-width: 200px;
+}
+
+
+input {
+    background-color: var(--accent-color);
+    color: var(--text-color);
+    border: none;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+input:focus {
+    outline: 2px solid var(--selected-accent-color);
+}
+
+button {
+    background-color: var(--accent-color);
+    color: var(--text-color);
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+button:hover {
+    background-color: var(--selected-accent-color);
+}
+button:active {
+    background-color: var(--text-color);
+    color: var(--background-color);
+}
+
+
+#renderedOutput {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 0px 10px;
+    padding: 5px;
+}
+
+#renderedOutput > div {
+    vertical-align: top;
+    padding: 5px;
+    border: 1px solid var(--selected-accent-color);
+    border-radius: 5px;
+}
+

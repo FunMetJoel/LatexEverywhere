@@ -17,31 +17,32 @@ export function copyExample() {
 // run copyExample when the button is clicked
 document.getElementById('copyExampleBtn').addEventListener('click', copyExample);
 
-document.getElementById('showUnicode').addEventListener('change', function() {
-    const mode = this.checked ? 'unicode' : 'latex';
-    chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, { type: 'set-mode', mode: mode }, function(response) {
-            console.log(response.status);
-        });
-    });
-});
+// document.getElementById('showUnicode').addEventListener('change', function() {
+//     const mode = this.checked ? 'unicode' : 'latex';
+//     chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+//         chrome.tabs.sendMessage(tabs[0].id, { type: 'set-mode', mode: mode }, function(response) {
+//             console.log(response.status);
+//         });
+//     });
+// });
 
 document.getElementById('latexInput').addEventListener('input', function() {
     const latex = this.value;
-    const outputDiv = document.getElementById('renderedOutput');
+    const outputLatexDiv = document.getElementById('LatexOutput');
+    const outputUnicodeDiv = document.getElementById('UnicodeOutput');
+
     if (latex.trim() === '') {
-        outputDiv.innerHTML = '';
+        outputDiv.outputLatexDiv = '';
+        outputDiv.outputUnicodeDiv = '';
         return;
     }
 
     try {
         const unicode = unicodify(latex);
-        outputDiv.innerHTML = unicode;
+        outputUnicodeDiv.innerHTML = unicode;
 
-        outputDiv.innerHTML += ' | '; // Clear previous content
 
-        const html = katex.renderToString(latex, { throwOnError: false });
-        outputDiv.innerHTML += html;
+        outputLatexDiv.innerHTML = katex.renderToString(latex, { throwOnError: false });
     } catch (err) {
         outputDiv.innerHTML = '<span style="color: red;">Invalid LaTeX</span>';
     }
