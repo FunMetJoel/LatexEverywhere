@@ -12,13 +12,13 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["lib/katex.min.js","content.js"],
+      "js": ["lib/katex.min.js","content.js", "insertPopup/popup.js"],
       "css": ["katex.min.css", "insertPopup/popup.css"]
     }
   ],
   "web_accessible_resources": [
     {
-      "resources": ["insertPopup/popup.html"],
+      "resources": ["insertPopup/popup.html", "insertPopup/popup.css"],
       "matches": ["<all_urls>"]
     }
   ],

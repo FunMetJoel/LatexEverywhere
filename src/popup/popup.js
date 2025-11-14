@@ -17,14 +17,14 @@ export function copyExample() {
 // run copyExample when the button is clicked
 document.getElementById('copyExampleBtn').addEventListener('click', copyExample);
 
-// document.getElementById('showUnicode').addEventListener('change', function() {
-//     const mode = this.checked ? 'unicode' : 'latex';
-//     chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-//         chrome.tabs.sendMessage(tabs[0].id, { type: 'set-mode', mode: mode }, function(response) {
-//             console.log(response.status);
-//         });
-//     });
-// });
+document.getElementById('showUnicode').addEventListener('change', function() {
+    const mode = this.checked ? 'unicode' : 'latex';
+    chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, { type: 'set-mode', mode: mode }, function(response) {
+            console.log(response.status);
+        });
+    });
+});
 
 document.getElementById('latexInput').addEventListener('input', function() {
     const latex = this.value;

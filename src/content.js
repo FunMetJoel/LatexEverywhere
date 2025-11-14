@@ -1,5 +1,3 @@
-// import "katex/dist/katex.min.css";
-
 import { detectLatexEverywhereBlock } from './lib/rendering.js';
 import { parseLatex } from './lib/latexParcer.js';
 
@@ -18,9 +16,9 @@ setInterval(() => {
 }, 1000);
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    console.log(message, sender, sendResponse);
     if (message.type === 'set-mode') {
         document.body.setAttribute('latex-everywhere-mode', message.mode);
         sendResponse({status: 'mode set to ' + message.mode});
     }
 });
-

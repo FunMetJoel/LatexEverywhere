@@ -42,3 +42,8 @@ h1 {
     width: 100%;
     min-width: 200px;
 }
+
+
+.latex-everywhere-invisible {
+    display: none;
+}

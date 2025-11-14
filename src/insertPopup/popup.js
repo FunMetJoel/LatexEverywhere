@@ -1,4 +1,4 @@
-(async () => {
+window.addEventListener("load", async () => {
     // Fetch overlay HTML file
     const overlayUrl = chrome.runtime.getURL("insertPopup/popup.html");
     const res = await fetch(overlayUrl);
@@ -6,7 +6,7 @@
 
     // Create container
     const container = document.createElement("div");
-    container.id = "myFullscreenOverlayContainer";
+    container.id = "LatexEverywhereFullscreenOverlayContainer";
     container.style.position = "fixed";
     container.style.top = "0";
     container.style.left = "0";
@@ -17,11 +17,20 @@
 
     document.body.appendChild(container);
 
-    // Close button handler
-    const closeBtn = container.querySelector(".close-btn");
-    if (closeBtn) {
-        closeBtn.addEventListener("click", () => {
-            container.remove();
-        });
+    container.classList.add("latex-everywhere-invisible");
+
+    // Add event listener to backgound to close overlay
+    const background = container.querySelector("#LatexEverywherePopup-Background");
+    background.addEventListener("click", (e) => {
+        if (e.target === background) {
+            container.classList.add("latex-everywhere-invisible");
+        }   
+    });
+});
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.type === 'show-LatexInvisible-popup') {
+        document.getElementById("LatexEverywhereFullscreenOverlayContainer").classList.remove("latex-everywhere-invisible");
+        sendResponse({status: 'Show popup'});
     }
-})();
+});

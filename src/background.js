@@ -8,11 +8,20 @@ chrome.runtime.onInstalled.addListener(() => {
 
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   if (info.menuItemId === "Create-Latex-Everywhere-block") {
-    chrome.action.openPopup();
+    // Get active tab
+    const [activeTab] = await chrome.tabs.query({
+      active: true,
+      currentWindow: true
+    });
+
+    if (!activeTab?.id) {
+      console.error("No active tab found");
+      return;
+    }
+
+    // Send message to content script
+    chrome.tabs.sendMessage(activeTab.id, { type: "show-LatexInvisible-popup" }, (response) => {
+      console.log(response?.status);
+    });
   }
-  const [tab2] = await chrome.tabs.query({ active: true, currentWindow: true });
-  await chrome.scripting.executeScript({
-    target: { tabId: tab2.id },
-    files: ["insertPopup/popup.js"]
-  });
 });
