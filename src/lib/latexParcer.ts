@@ -6,6 +6,11 @@ export function parseLatex(input: string): MathExpr.Expression {
     return expression;
 }
 
+export function unicodify(input: string): string {
+    const expression = parseLatex(input);
+    return expression.unicodify();
+}
+
 
 function tokenize(input: string): string[] {
     // Latex tokenizer. A token can be a command (starting with \), a symbol (+, -, /, etc.), or an alphanumeric string.

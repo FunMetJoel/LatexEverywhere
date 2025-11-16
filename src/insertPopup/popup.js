@@ -1,6 +1,6 @@
 import { startIndicator, endIndicator, middleIndicator } from '../lib/encoding.js';
 import { encodeToInvisible } from '../lib/encoding.js';
-import { unicodify } from '../lib/unicodify.js';
+import { unicodify } from '../lib/latexParcer.js';
 
 var inputElement = null;
 document.addEventListener("contextmenu", function(event){
