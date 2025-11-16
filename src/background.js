@@ -20,7 +20,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     }
 
     // Send message to content script
-    chrome.tabs.sendMessage(activeTab.id, { type: "show-LatexInvisible-popup" }, (response) => {
+    chrome.tabs.sendMessage(activeTab.id, { type: "show-LatexInvisible-popup"}, (response) => {
       console.log(response?.status);
     });
   }

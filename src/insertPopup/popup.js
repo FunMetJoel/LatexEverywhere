@@ -1,3 +1,14 @@
+import { startIndicator, endIndicator, middleIndicator } from '../lib/encoding.js';
+import { encodeToInvisible } from '../lib/encoding.js';
+import { unicodify } from '../lib/unicodify.js';
+
+var inputElement = null;
+document.addEventListener("contextmenu", function(event){
+    if (!(event.target.closest("#LatexEverywhereFullscreenOverlayContainer"))) {
+        inputElement = event.target;
+    } 
+}, true);
+
 window.addEventListener("load", async () => {
     // Fetch overlay HTML file
     const overlayUrl = chrome.runtime.getURL("insertPopup/popup.html");
@@ -25,6 +36,39 @@ window.addEventListener("load", async () => {
         if (e.target === background) {
             container.classList.add("latex-everywhere-invisible");
         }   
+    });
+
+    const cancelButton = container.querySelector("#cancelLatexEverywhereBtn");
+    cancelButton.addEventListener("click", (e) => {
+        container.classList.add("latex-everywhere-invisible");
+    });
+
+    const confirmButton = container.querySelector("#insertLatexEverywhereBtn");
+    confirmButton.addEventListener("click", () => {
+        container.classList.add("latex-everywhere-invisible");
+        const latex = document.querySelector('#LatexEverywhereLatexInput').value;
+        const element = `${startIndicator}${unicodify(latex)}${middleIndicator}${encodeToInvisible(latex)}${endIndicator}`;
+        inputElement.value += element;
+    });
+
+    container.querySelector('#LatexEverywhereLatexInput').addEventListener('input', function () {
+        const latex = this.value;
+        const outputLatexDiv = container.querySelector('#LatexOutput');
+        const outputUnicodeDiv = container.querySelector('#UnicodeOutput');
+
+        if (latex.trim() === '') {
+            outputLatexDiv = '';
+            outputUnicodeDiv = '';
+            return;
+        }
+
+        try {
+            const unicode = unicodify(latex);
+            outputUnicodeDiv.innerHTML = unicode;
+            outputLatexDiv.innerHTML = katex.renderToString(latex, { throwOnError: false });
+        } catch (err) {
+            outputUnicodeDiv.innerHTML = '<span style="color: red;">Invalid LaTeX</span>';
+        }
     });
 });
 

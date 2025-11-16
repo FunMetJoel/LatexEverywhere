@@ -35,7 +35,7 @@
     border: 2px solid var(--LatexEverywherePopup-accent-color);
 }
 
-h1 {
+#LatexEverywherePopup-Background h1 {
     font-size: 18px;
     margin: 0;
     text-align: center;
@@ -43,7 +43,38 @@ h1 {
     min-width: 200px;
 }
 
+#renderedOutput {
+    display: grid;
+    gap: 0 10px;
+    grid-template-columns: 1fr 3fr;
+}
+
 
 .latex-everywhere-invisible {
     display: none;
 }
+
+button#insertLatexEverywhereBtn, button#cancelLatexEverywhereBtn {
+    background-color: var(--LatexEverywherePopup-accent-color);
+    color: var(--text-color);
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+button#insertLatexEverywhereBtn:hover, button#cancelLatexEverywhereBtn:hover {
+    background-color: var(--LatexEverywherePopup-selected-accent-color);
+}
+button#insertLatexEverywhereBtn:active, button#cancelLatexEverywhereBtn:active {
+    background-color: var(--LatexEverywherePopup-text-color);
+    color: var(--LatexEverywherePopup-background-color);
+}
+
+input#LatexEverywhereLatexInput {
+    background-color: var(--LatexEverywherePopup-accent-color);
+    color: var(--LatexEverywherePopup-text-color);
+    border: none;
+    padding: 5px;
+    border-radius: 5px;
+}
+
