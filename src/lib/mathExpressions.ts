@@ -133,6 +133,17 @@ export class Fraction extends Expression {
     }
 
     unicodify(): string {
+        if (this.numerator instanceof Token && this.denominator instanceof Token) {
+            const fracKey = this.numerator.value + "/" + this.denominator.value;
+            if (fracKey in Fraction.defaultFractions) {
+                return Fraction.defaultFractions[fracKey] ?? "SOMETHING WENT WRONG";
+            }
+
+            if (this.numerator.canSuperScript() && this.denominator.canSubScript()) {
+                return this.numerator.getSuperscript() + '⁄' + this.denominator.getSubscript();
+            }
+        }
+
         return "(" + this.numerator.unicodify() + ")/(" + this.denominator.unicodify() + ")";
     }
 
@@ -143,6 +154,24 @@ export class Fraction extends Expression {
     canSubScript(): boolean {
         return false;
     }
+
+    static defaultFractions: { [key: string]: string } = {
+        "1/2": "½",
+        "1/3": "⅓",
+        "2/3": "⅔",
+        "1/4": "¼",
+        "3/4": "¾",
+        "1/5": "⅕",
+        "2/5": "⅖",
+        "3/5": "⅗",
+        "4/5": "⅘",
+        "1/6": "⅙",
+        "5/6": "⅚",
+        "1/8": "⅛",
+        "3/8": "⅜",
+        "5/8": "⅝",
+        "7/8": "⅞"
+    };
 }
 
 export class Superscript extends Expression {
