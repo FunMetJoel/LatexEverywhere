@@ -1,6 +1,6 @@
 {
   "name": "latexeverywhere",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "A chrome extension to write latex on sites that don't support it",
   "main": "index.js",
   "directories": {
