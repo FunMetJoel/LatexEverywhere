@@ -3,7 +3,7 @@
  * @param {string} inputString 
  * @returns 
  */
-export function encodeToInvisible(inputString) {
+export function encodeToInvisible(inputString: string): string {
     let invisibleString = '';
     const encoder = new TextEncoder();
     const inputBinary = encoder.encode(inputString);;
@@ -15,7 +15,7 @@ export function encodeToInvisible(inputString) {
     return invisibleString;
 }
 
-export function binaryToInvisible(binaryString) {
+export function binaryToInvisible(binaryString: string): string {
     let invisibleString = '';
     for (const bit of binaryString) {
         invisibleString += (bit === '1') ? '\u200B' : '\u200C'; // Zero-width space for '1', zero-width non-joiner for '0'
@@ -32,7 +32,7 @@ export const endIndicator = binaryToInvisible('00000011'); // ETX
  * @param {string} invisibleString 
  * @returns 
  */
-export function decodeFromInvisible(invisibleString) {
+export function decodeFromInvisible(invisibleString: string): string {
     let binaryString = '';
     for (const char of invisibleString) {
         if (char === '\u200B') {
