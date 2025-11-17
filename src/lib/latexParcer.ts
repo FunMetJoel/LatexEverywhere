@@ -94,7 +94,7 @@ function tokenInterpreter(tokens: string[]): MathExpr.Expression {
         else if (token === '[') {
             const expr = parseExpression();
             consume(); // consume ']'
-            return expr;
+            return new MathExpr.BlockBracketedExpression(expr);
         }
         else if (token === '^') {
             const exponent = parseFactor();
@@ -121,6 +121,10 @@ function tokenInterpreter(tokens: string[]): MathExpr.Expression {
                 const radicand = parseFactor();
                 return new MathExpr.SquareRoot(radicand);
             }
+        }
+        else if (["\\mathbb", "\\mathcal", "\\mathbf", "\\mathfrak", "\\mathsf", "\\mathtt"].includes(token)) {
+            const text = parseFactor();
+            return new MathExpr.SpecialMathFontToken(text, token);
         }
         else if (token.charAt(0) === '\\') {
             const tokenName = token.substring(1);
